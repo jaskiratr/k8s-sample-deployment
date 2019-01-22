@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postmate-cms
+spec:
+  selector:
+    matchLabels:
+      app: cms
+  replicas: 1
+  template:
+    metadata:
+      name: cms
+      labels:
+        app: cms
+    spec:
+      containers:
+        - name: cms
+          image: strapi/strapi
+          ports:
+            - name: http
+              containerPort: 1337
+          env:
+            - name: APP_NAME
+              value: postmate-app
+            - name: DATABASE_AUTHENTICATION_DATABASE
+              value: strapi
+            - name: DATABASE_CLIENT
+              value: mongo
+            - name: DATABASE_USERNAME
+              value: ""
+            - name: DATABASE_PASSWORD
+              value: ""
+            - name: DATABASE_HOST
+              value: postmate-mongodb
+            - name: DATABASE_NAME
+              value: strapi
+            - name: DATABASE_PORT
+              value: "27017"
+            - name: DATABASE_SSL
+              value: "false"
+          volumeMounts:
+            - name: cms-persistent-storage
+              mountPath: /usr/src/api/strapi-app
+      volumes:
+        - name: cms-persistent-storage
+          persistentVolumeClaim:
+            claimName: cms-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postmate-cms
+  labels:
+    app: cms
+spec:
+  selector:
+    app: cms
+  ports:
+    - name: "1337"
+      protocol: TCP
+      port: 1337
+      nodePort: 30083
+  type: NodePort

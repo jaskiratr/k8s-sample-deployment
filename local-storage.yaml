@@ -1,0 +1,59 @@
+---
+# CMS: PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cms-pvc
+spec:
+  storageClassName: cmslocalstorage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+# CMS: PVC Implementation
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cms-local-storage
+spec:
+  storageClassName: cmslocalstorage
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/postmate-cms"
+    type: DirectoryOrCreate
+
+---
+# MongoDB: PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  storageClassName: mongolocalstorage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+# MongoDB: PVC Implementation
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-local-storage
+spec:
+  storageClassName: mongolocalstorage
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/postmate-mongodb"
+    type: DirectoryOrCreate

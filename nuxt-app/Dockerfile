@@ -2,7 +2,7 @@ FROM node:10.7
 
 # Install app dependencies
 RUN apt-get update
-RUN apt-get install nano nginx -y
+RUN apt-get install nano nginx dnsutils -y
 
 # Copy nginx configuration
 COPY nginx/nginx.conf /etc/nginx/

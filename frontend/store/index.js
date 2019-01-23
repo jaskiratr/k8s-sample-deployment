@@ -20,7 +20,8 @@ const createStore = () => {
     },
     actions: {
       getPosts(store) {
-        fetch('http://' + window.location.hostname + '/strapi/posts')
+        // fetch('http://' + window.location.hostname + '/strapi/posts')
+        fetch('/strapi/posts')
           .then(response => response.json())
           .then(json => {
             store.commit('setPosts', json)

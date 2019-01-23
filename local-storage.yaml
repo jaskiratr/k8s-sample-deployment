@@ -25,7 +25,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/postmate-cms"
+    path: "/data/postmate/cms"
     type: DirectoryOrCreate
 
 ---
@@ -55,5 +55,5 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/postmate-mongodb"
+    path: "/data/postmate/mongodb"
     type: DirectoryOrCreate

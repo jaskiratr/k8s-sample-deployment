@@ -17,6 +17,9 @@ spec:
         - name: frontend
           image: "k8s-postmate-frontend:latest"
           imagePullPolicy: Never
+          env:
+            - name: DEPLOY_ENV
+              value: dev
           ports:
             - name: http
               containerPort: 3000

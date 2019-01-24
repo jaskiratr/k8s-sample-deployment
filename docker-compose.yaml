@@ -1,31 +1,26 @@
 version: "3"
 services:
+  # Frontend
   postmate-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: jaskiratr/k8s-postmate-frontend
     ports:
       - 3000:3000
       - 80:80
     environment:
-      - POSTMATE_PROFILE_ACTIVE=local-microservice
-      - POSTMATE_CMS_SERVER=postmate-cms
+      - POSTMATE_ENVIRONMENT=local-microservice
     volumes:
       - ./frontend:/usr/src/app/
       - node_modules:/usr/src/app/node_modules
-    # command: ["npm", "run", "dev"]
+    depends_on:
+      - postmate-cms
 
-  postmate-mongodb:
-    image: mongo
-    ports:
-      - 27017:27017
-    volumes:
-      - "mongodbdata:/data/db"
-    command: mongod --smallfiles --logpath=/dev/null
-
+  # CMS
   postmate-cms:
     build: ./cms
-    image: strapi/strapi
+    image: jaskiratr/k8s-postmate-cms
     environment:
       - APP_NAME=strapi-app
       - DATABASE_CLIENT=mongo
@@ -41,21 +36,18 @@ services:
       - 1337:1337
     volumes:
       - ./cms/strapi-app:/usr/src/api/strapi-app
-      #- /usr/src/api/strapi-app/node_modules
     depends_on:
       - postmate-mongodb
     restart: always
-  #   build:
-  #     context: ./cms
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 1337:1337
-  # volumes:
-  #   - ./frontend:/usr/src/app/
-  #   - node_modules:/usr/src/app/node_modules
-  # command: ["npm", "run", "dev"]
-# volumes:
-#   node_modules:
+
+  # MongoDB
+  postmate-mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - "mongodbdata:/data/db"
+    command: mongod --smallfiles --logpath=/dev/null
 
 volumes:
   node_modules:

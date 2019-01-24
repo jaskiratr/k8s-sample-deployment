@@ -29,29 +29,6 @@ spec:
           persistentVolumeClaim:
             claimName: mongo-pvc
 
-# apiVersion: v1
-# kind: Pod
-# metadata:
-#   name: postmate-mongodb
-#   labels:
-#     app: postmate-mongodb
-# spec:
-#   containers:
-#     - name: postmate-mongodb
-#       image: mongo
-#       ports:
-#         - containerPort: 27017
-#       env:
-#         - name: MONGO_INITDB_DATABASE
-#           value: strapi
-#       volumeMounts:
-#         - name: mongo-persistent-storage
-#           mountPath: /data/db
-#   volumes:
-#     - name: mongo-persistent-storage
-#       persistentVolumeClaim:
-#         claimName: mongo-pvc
-
 ---
 kind: Service
 apiVersion: v1

@@ -9,6 +9,8 @@ LABEL maintainer="Luca Perret <perret.luca@gmail.com>" \
   org.label-schema.version=latest \
   org.label-schema.schema-version="1.0"
 
+RUN apk add --no-cache bash
+
 WORKDIR /usr/src/api
 
 RUN echo "unsafe-perm = true" >> ~/.npmrc

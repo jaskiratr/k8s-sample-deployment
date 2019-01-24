@@ -81,4 +81,5 @@ dist
 .idea
 
 # Strapi uploads
-cms/strapi-app/public/uploads/
+cms/strapi-app/public/uploads/*
+!cms/strapi-app/public/uploads/readme.txt

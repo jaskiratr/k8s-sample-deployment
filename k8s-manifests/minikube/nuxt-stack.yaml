@@ -15,11 +15,11 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: "k8s-postmate-frontend:latest"
-          imagePullPolicy: Never
+          image: jaskiratr/k8s-postmate-frontend:latest
+          # imagePullPolicy: Never
           env:
-            - name: DEPLOY_ENV
-              value: dev
+            - name: POSTMATE_ENVIRONMENT
+              value: production
           ports:
             - name: http
               containerPort: 3000

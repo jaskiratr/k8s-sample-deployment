@@ -15,13 +15,14 @@ spec:
     spec:
       containers:
         - name: cms
-          image: strapi/strapi
+          image: jaskiratr/k8s-postmate-cms:v1
+          imagePullPolicy: Never
           ports:
             - name: http
               containerPort: 1337
           env:
             - name: APP_NAME
-              value: postmate-app
+              value: strapi-app
             - name: DATABASE_AUTHENTICATION_DATABASE
               value: strapi
             - name: DATABASE_CLIENT

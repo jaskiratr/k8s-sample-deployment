@@ -11,14 +11,27 @@ Postmate - A sample application to demonstrate deployments with Kubernetes.
 ### Local Development - Minikube
 
 _To Do_
+We'll mount volumes for all services.
+
+```sh
+# Create a volume for MongoDB
+docker volume create mongodbdata
+docker-compose up
+```
+
+Once done. Build and push the image to registry.
 
 ### Local Deployment - Minikube
+
+Pull from registry
 
 ```sh
 minikube start
 
 # Windows
 minikube start --vm-driver=hyperv --hyperv-virtual-switch=myCluster --v=7
+# minikube start --vm-driver=hyperv --hyperv-virtual-switch=myCluster --mount --mount-string="D:\Git\k8s-sample-deployment:/data/postmate" --v=3
+
 
 # Point Docker environment to Minikube
 minikube docker-env | Invoke-Expression
@@ -26,14 +39,25 @@ minikube docker-env | Invoke-Expression
 docker images
 
 # Build images
+# Individual images
 docker build -t k8s-postmate-frontend:latest ./nuxt-app
-docker build -t nginx-reverse-proxy:latest ./nginx-reverse-proxy
+docker build -t jaskiratr/k8s-postmate-frontend:v1 ./cms
+
+# All images
+docker-compose build
+
+# Push to Docker Hub
+docker push jaskiratr/k8s-postmate-frontend
+docker push jaskiratr/k8s-postmate-cms
 
 # Deploy workloads and services
 kubectl apply -f .
 ```
 
 #### Backing up data
+
+sudo chmod -R 777 /data
+scp -i $(minikube ssh-key) /source-folder docker@$(minikube ip):/destination-folder
 
 _To Do_
 

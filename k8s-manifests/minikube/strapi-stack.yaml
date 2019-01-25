@@ -15,8 +15,7 @@ spec:
     spec:
       containers:
         - name: cms
-          image: jaskiratr/k8s-postmate-cms:v1
-          imagePullPolicy: Never
+          image: jaskiratr/k8s-postmate-cms:latest
           ports:
             - name: http
               containerPort: 1337

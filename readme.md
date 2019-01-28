@@ -1,98 +1,83 @@
 # K8S Sample Deployment
 
-Postmate - A sample application to demonstrate deployments with Kubernetes.
+Postmate - A sample application to demonstrate [container native development](https://cloudblogs.microsoft.com/opensource/2018/04/23/5-reasons-you-should-be-doing-container-native-development/) using Docker and Kubernetes.
 
-## Components
+<p align="center">
+  <img width="600" alt="header" src="assets/postmate.jpg">
+</p>
+
+## Prerequisites
+
+- [Docker](https://www.docker.com/) and [Docker Compose](https://github.com/docker/compose)
+- [Minikube](https://github.com/kubernetes/minikube) and [Kubectl](https://github.com/kubernetes/kubectl)
+- [Kops](https://github.com/kubernetes/kops)
+
+## Microservices
+
+Postmate is built with following microservices.
 
 - Front-end built with Nuxt (Vue.js)
 - Strapi CMS
 - MongoDB
 
-### Local Development - Minikube
+## Local Development - Docker Compose
 
-_To Do_
-We'll mount volumes for all services.
+We'll use Docker Compose to spin up a development environment with all the services connected to each other
+
+### 1. Persistent Storage
+
+To maintain persistent storage for each container we'll mount local host directories. Except for MongoDB, for which we'll create a named volume.
 
 ```sh
-# Create a volume for MongoDB
+# (Run once) Create a external named volume for MongoDB
 docker volume create mongodbdata
-docker-compose up
 ```
 
-Once done. Build and push the image to registry.
+### 2. Development
 
-### Local Deployment - Minikube
-
-Pull from registry
+Start the services. The frontend also supports live-reload so the changes are reflected in the browser.
 
 ```sh
-minikube start
+# Start the services
+docker-compose up
+# Stop the services
+docker-compose down
+```
 
-# Windows
-minikube start --vm-driver=hyperv --hyperv-virtual-switch=myCluster --v=7
-# minikube start --vm-driver=hyperv --hyperv-virtual-switch=myCluster --mount --mount-string="D:\Git\k8s-sample-deployment:/data/postmate" --v=3
+Following endpoints are exposed to browser:
 
+- Frontend: `localhost`
+- CMS: `localhost:1337`
 
-# Point Docker environment to Minikube
-minikube docker-env | Invoke-Expression
-# Verify
-docker images
+### 3. Build and Push Images
 
-# Build images
-# Individual images
-docker build -t k8s-postmate-frontend:latest ./nuxt-app
-docker build -t jaskiratr/k8s-postmate-frontend:v1 ./cms
+Once satisfied with development updates the images can be built and pushed the image to registry, in this case, Docker Hub.
 
-# All images
+```sh
+# Build individual images
+docker build -t jaskiratr/k8s-postmate-frontend:latest ./frontend
+docker build -t jaskiratr/k8s-postmate-cms:latest ./cms
+
+# Build all images at once
 docker-compose build
 
 # Push to Docker Hub
 docker push jaskiratr/k8s-postmate-frontend
 docker push jaskiratr/k8s-postmate-cms
-
-# Deploy workloads and services
-kubectl apply -f .
 ```
 
-#### Backing up data
+## Deployment
 
-sudo chmod -R 777 /data
-scp -i $(minikube ssh-key) /source-folder docker@$(minikube ip):/destination-folder
+We'll use Kubernetes for deploying our microservices.
+The deployment guides are listed under `k8s-manifests`
 
-_To Do_
+- [Local deployment with Minikube](k8s-manifests/minikube) : For testing the deployment on local machine first.
+- [AWS deployment with Kops](k8s-manifests/aws) : Production deployment on AWS with Kops
 
-### AWS Setup
+### To Do
 
-- Create IAM User
-- Attach necessary policies
-- Create S3 Bucket `your-unique-state-storage`
-- Export env vars
-
-```sh
-# configure the aws client to use your new IAM user
-aws configure           # Use your new access and secret key here
-aws iam list-users      # you should see a list of all your IAM users here
-
-# Because "aws configure" doesn't export these vars for kops to use, we export them now
-export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
-export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
-
-export NAME="myfirstcluster.example.com"
-export KOPS_STATE_STORE="s3://prefix-example-com-state-store"
-export EDITOR=nano
-
-# See availability zones
-aws ec2 describe-availability-zones --region us-west-2
-
-kops create cluster --zones us-west-2a ${NAME}
-
-kops get ig --name ${NAME}
-# Edit node config
-kops edit ig nodes --name ${NAME}
-# Edit master config
-kops edit ig {MASTER NODE NAME FROM THE LIST} --name ${NAME}
-```
-
-### Readings:
-
-- [Container Native Development](https://cloudblogs.microsoft.com/opensource/2018/04/23/5-reasons-you-should-be-doing-container-native-development/)
+- Architecture Diagram
+- GCP deployment guide with kops
+- ELK stack for logging
+- Prometheus and Grafana stack for monitoring
+- Alert manager for alerts.

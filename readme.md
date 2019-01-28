@@ -74,6 +74,10 @@ The deployment guides are listed under `k8s-manifests`
 - [Local deployment with Minikube](k8s-manifests/minikube) : For testing the deployment on local machine first.
 - [AWS deployment with Kops](k8s-manifests/aws) : Production deployment on AWS with Kops
 
+## Initialize Application
+
+Follow the guide [here](initialize-cms.md) to initialize Postmate with minimal setup.
+
 ### To Do
 
 - Architecture Diagram
